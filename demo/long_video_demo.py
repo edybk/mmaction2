@@ -255,6 +255,7 @@ def main():
     test_pipeline = Compose(pipeline_)
 
     assert sample_length > 0
+    print(sample_length)
     args.sample_length = sample_length
     args.test_pipeline = test_pipeline
 
