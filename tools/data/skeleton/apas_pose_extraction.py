@@ -21,6 +21,8 @@ except ImportError:
         'Please install MMDet and MMPose for NTURGB+D pose extraction.'
     )  # noqa: E501
 
+
+
 mmdet_root = '/data/home/bedward/workspace/mmpose-project/mmdetection'
 mmpose_root = '/data/home/bedward/workspace/mmpose-project/mmpose'
 
@@ -47,10 +49,14 @@ def gen_id(size=8):
     return ''.join(rd.choice(chars) for _ in range(size))
 
 
+tmp_dname = f"tmp_{gen_id()}"
+print(f"tmp folder name = {tmp_dname}")
+
 def extract_frame(video_path):
     dname = gen_id()
-    os.makedirs(dname, exist_ok=True)
-    frame_tmpl = osp.join(dname, 'img_{:05d}.jpg')
+    frame_dir = f"{tmp_dname}/{dname}"
+    os.makedirs(frame_dir, exist_ok=True)
+    frame_tmpl = osp.join(frame_dir, 'img_{:05d}.jpg')
     vid = cv2.VideoCapture(video_path)
     frame_paths = []
     flag, frame = vid.read()
@@ -65,9 +71,16 @@ def extract_frame(video_path):
 
     return frame_paths
 
+detector_model = None
+def get_detector_model(config, checkpoint, device):
+    global detector_model
+    if not detector_model:
+        detector_model = init_detector(config, checkpoint, device)
+        print("initialized detector model")
+    return detector_model
 
 def detection_inference(args, frame_paths):
-    model = init_detector(args.det_config, args.det_checkpoint, args.device)
+    model = get_detector_model(args.det_config, args.det_checkpoint, args.device)
     # assert model.CLASSES[0] == 'person', ('We require you to use a detector '
     #                                       'trained on COCO')
     results = []
@@ -291,9 +304,16 @@ def ntu_det_postproc(vid, det_results):
     else:
         return bboxes2bbox(det_results, len(det_results))
 
+pose_model = None
+def get_pose_model(config, checkpoint, device):
+    global pose_model
+    if not pose_model:
+        pose_model = init_pose_model(config, checkpoint, device)
+        print("initialized pose model")
+    return pose_model
 
 def pose_inference(args, frame_paths, det_results):
-    model = init_pose_model(args.pose_config, args.pose_checkpoint,
+    model = get_pose_model(args.pose_config, args.pose_checkpoint,
                             args.device)
     print('Performing Hand Pose Estimation for each frame')
     prog_bar = mmcv.ProgressBar(len(frame_paths))
@@ -370,3 +390,4 @@ if __name__ == '__main__':
                     mmcv.dump(anno, out_path)
                 except:
                     print(f"failure at vid {vid_path}, skipping")
+    shutil.rmtree(tmp_dname)
