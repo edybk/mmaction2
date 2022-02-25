@@ -111,7 +111,7 @@ optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 lr_config = dict(policy='CosineAnnealing', by_epoch=False, min_lr=0)
 total_epochs = 240
 checkpoint_config = dict(interval=10)
-workflow = [('train', 10)]
+workflow = [('train', 10), ('val', 1)]
 evaluation = dict(
     interval=10,
     metrics=['top_k_accuracy', 'mean_class_accuracy'],
