@@ -12,7 +12,7 @@ model = dict(
         init_std=0.005),
     cls_head=dict(
         type='I3DHead',
-        num_classes=5,
+        num_classes=6,
         in_channels=4096,
         spatial_type=None,
         dropout_ratio=0.5,
@@ -21,13 +21,13 @@ model = dict(
     test_cfg=dict(average_clips='score'))
 
 dataset_type = 'VideoDataset'
-split = 3
+split = 5
 
 data_root = 'data/apas'
 data_root_val = 'data/apas'
-ann_file_train = f'data/apas/splits/train.split{split}.txt'
-ann_file_val = f'data/apas/splits/val.split{split}.txt'
-ann_file_test = f'data/apas/splits/test.split{split}.txt'
+ann_file_train = f'data/apas/splits/withoutg0/train.split{split}.txt'
+ann_file_val = f'data/apas/splits/withoutg0/val.split{split}.txt'
+ann_file_test = f'data/apas/splits/withoutg0/test.split{split}.txt'
 img_norm_cfg = dict(
     mean=[144.7125, 132.8805, 124.7715],
     std=[65.127, 69.1305, 70.737],
@@ -94,7 +94,7 @@ data = dict(
     test_dataloader=dict(videos_per_gpu=1),
     train=dict(
         type='VideoDataset',
-        ann_file=f'data/apas/splits/train.split{split}.txt',
+        ann_file=ann_file_train,
         data_prefix='data/apas',
         pipeline=[
             dict(type='DecordInit'),
@@ -118,7 +118,7 @@ data = dict(
         ]),
     val=dict(
         type='VideoDataset',
-        ann_file=f'data/apas/splits/val.split{split}.txt',
+        ann_file=ann_file_val,
         data_prefix='data/apas',
         pipeline=[
             dict(type='DecordInit'),
@@ -142,7 +142,7 @@ data = dict(
         ]),
     test=dict(
         type='VideoDataset',
-        ann_file=f'data/apas/splits/test.split{split}.txt',
+        ann_file=ann_file_test,
         data_prefix='data/apas',
         pipeline=[
             dict(type='DecordInit'),
@@ -178,7 +178,7 @@ load_from = "https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1
 # resume_from = '/data/home/bedward/workspace/mmpose-project/mmaction2/work_dirs/c3d_sports1m_16x1x1_45e_apas_rgb/epoch_45.pth'
 resume_from = None
 workflow = [('train', 5), ('val', 1)]
-work_dir = './work_dirs/c3d_sports1m_16x1x1_45e_apas_rgb_200epochs'
+work_dir = f'./work_dirs/c3d_sports1m_16x1x1_45e_apas_rgb_200epochs_withoutg0_split{split}'
 gpu_ids = range(0, 1)
 omnisource = False
 module_hooks = []
