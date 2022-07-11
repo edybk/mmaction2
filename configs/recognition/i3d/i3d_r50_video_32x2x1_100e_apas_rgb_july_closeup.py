@@ -1,23 +1,14 @@
 _base_ = ['./i3d_r50_32x2x1_100e_kinetics400_rgb.py']
 
-# dataset settings
-# dataset_type = 'VideoDataset'
-# data_root = 'data/kinetics400/videos_train'
-# data_root_val = 'data/kinetics400/videos_val'
-# ann_file_train = 'data/kinetics400/kinetics400_train_list_videos.txt'
-# ann_file_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
-# ann_file_test = 'data/kinetics400/kinetics400_val_list_videos.txt'
-# img_norm_cfg = dict(
-#     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
-
+split = 3
+view = "closeup"
 dataset_type = 'VideoDataset'
-data_root = 'data/apas/frontal/clips'
-data_root_val = 'data/apas/frontal/clips'
-ann_file_train = 'data/apas/splits/train.split2.txt'
-ann_file_val = 'data/apas/splits/val.split2.txt'
-ann_file_test = 'data/apas/splits/test.split2.txt'
-# img_norm_cfg = dict(
-#     mean=[144.7125, 132.8805, 124.7715], std=[65.1270, 69.1305, 70.737], to_bgr=True)
+data_root = f'data/apas/{view}/clips'
+data_root_val = f'data/apas/{view}/clips'
+ann_file_train = f'data/apas/{view}/clips/splits/train.split{split}.txt'
+ann_file_val = f'data/apas/{view}/clips/splits/val.split{split}.txt'
+ann_file_test = f'data/apas/{view}/clips/splits/test.split{split}.txt'
+
 img_norm_cfg = dict(
     mean=[144.01279543590812, 131.91472349201618, 123.31423661654405], std=[64.7040393831716, 68.7886688576991, 70.7488325943194], to_rgb=True)
 
@@ -91,3 +82,7 @@ data = dict(
         ann_file=ann_file_val,
         data_prefix=data_root_val,
         pipeline=test_pipeline))
+
+
+checkpoint_config = dict(interval=5)
+work_dir = f'./work_dirs/i3d_apas_july_{view}/'

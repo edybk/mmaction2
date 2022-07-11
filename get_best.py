@@ -6,6 +6,7 @@ tsn_log_jsons = "/data/home/bedward/workspace/mmpose-project/mmaction2/work_dirs
 
 tsn_log2_jsons = "/data/home/bedward/workspace/mmpose-project/mmaction2/work_dirs/tsn_r50_video_1x1x8_100e_kinetics400_rgb_apas_withoutg0/20220605_152450.log.json"
 
+csn_log_jsons = "/data/home/bedward/workspace/mmpose-project/mmaction2/work_dirs/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb_apas/20220609_002728.log.json"
 
 def get_best(jsonsss):
     acc = []
@@ -18,4 +19,4 @@ def get_best(jsonsss):
     return max(acc)
     
 
-get_best(tsn_log2_jsons)
+get_best(csn_log_jsons)

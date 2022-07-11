@@ -26,7 +26,7 @@ def parse_args():
         default=16,
         help='the sampling frequency of frame in the untrimed video')
     parser.add_argument('--modality', default='RGB', choices=['RGB', 'Flow'])
-    parser.add_argument('--model-choice', default='tsn', choices=['tsn', 'c3d'])
+    parser.add_argument('--model-choice', default='tsn', choices=['tsn', 'c3d', 'csn'])
     parser.add_argument('--ckpt', help='checkpoint for feature extraction')
     parser.add_argument(
         '--part',
@@ -60,6 +60,13 @@ def main():
         the_scale = (128, 171)
         the_crop_size = 112
         args.clip_len = 16
+    elif args.model_choice == "csn":
+        args.input_format = "NCTHW"
+        rgb_norm_cfg = dict(mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
+        the_scale = (-1, 256)
+        the_crop_size = 224
+        args.clip_len = 32
+        args.frame_interval = 2
 
 
     flow_norm_cfg = dict(mean=[128, 128], std=[128, 128])
@@ -130,6 +137,29 @@ def main():
                 init_std=0.01),
             train_cfg=None,
             test_cfg=dict(average_clips='score', feature_extraction=True))
+    elif args.model_choice == "csn":
+        model_cfg = dict(
+            type='Recognizer3D',
+            backbone=dict(
+                type='ResNet3dCSN',
+                pretrained2d=False,
+                pretrained=None,
+                depth=152,
+                with_pool2=False,
+                bottleneck_mode='ir',
+                norm_eval=False,
+                zero_init_residual=False),
+            cls_head=dict(
+                type='I3DHead',
+                num_classes=6,
+                in_channels=2048,
+                spatial_type='avg',
+                dropout_ratio=0.5,
+                init_std=0.01),
+            # model training and testing settings
+            train_cfg=None,
+            test_cfg=dict(average_clips='prob', max_testing_views=10))
+
     
     model = build_model(model_cfg)
     # load pretrained weight into the feature extractor
