@@ -1,7 +1,7 @@
 _base_ = ['./i3d_r50_32x2x1_100e_kinetics400_rgb.py']
 
 split = 3
-view = "closeup"
+view = "frontal"
 dataset_type = 'VideoDataset'
 data_root = f'data/apas/{view}/clips'
 data_root_val = f'data/apas/{view}/clips'
@@ -10,7 +10,7 @@ ann_file_val = f'data/apas/{view}/clips/splits/val.split{split}.txt'
 ann_file_test = f'data/apas/{view}/clips/splits/test.split{split}.txt'
 
 img_norm_cfg = dict(
-    mean=[144.01279543590812, 131.91472349201618, 123.31423661654405], std=[64.7040393831716, 68.7886688576991, 70.7488325943194], to_rgb=True)
+    mean=[144.01279543590812, 131.91472349201618, 123.31423661654405], std=[64.7040393831716, 68.7886688576991, 70.7488325943194], to_bgr=False)
 
 
 train_pipeline = [
@@ -86,3 +86,4 @@ data = dict(
 
 checkpoint_config = dict(interval=5)
 work_dir = f'./work_dirs/i3d_apas_july_{view}/'
+workflow = [('train', 1), ('val', 1)]

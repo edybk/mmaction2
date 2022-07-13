@@ -12,36 +12,7 @@ from mmaction.datasets.pipelines import Compose
 from mmaction.models import build_model
 
 
-def parse_args():
-    parser = argparse.ArgumentParser(description='Extract TSN Feature')
-    parser.add_argument('--data-prefix', default='', help='dataset prefix')
-    parser.add_argument('--output-prefix', default='', help='output prefix')
-    parser.add_argument(
-        '--data-list',
-        help='video list of the dataset, the format should be '
-        '`frame_dir num_frames output_file`')
-    parser.add_argument(
-        '--frame-interval',
-        type=int,
-        default=16,
-        help='the sampling frequency of frame in the untrimed video')
-    parser.add_argument('--modality', default='RGB', choices=['RGB', 'Flow'])
-    parser.add_argument('--model-choice', default='tsn', choices=['tsn', 'c3d', 'csn', 'i3d'])
-    parser.add_argument('--view', default='frontal', choices=['frontal', 'closeup', 'csn', 'i3d'])
-    parser.add_argument('--ckpt', help='checkpoint for feature extraction')
-    parser.add_argument(
-        '--part',
-        type=int,
-        default=0,
-        help='which part of dataset to forward(alldata[part::total])')
-    parser.add_argument(
-        '--total', type=int, default=1, help='how many parts exist')
-    args = parser.parse_args()
-    return args
-
-
-def main():
-    args = parse_args()
+def main(args):
     args.is_rgb = args.modality == 'RGB'
     if args.model_choice == "tsn":
         args.clip_len = 1 if args.is_rgb else 5
@@ -178,27 +149,27 @@ def main():
     elif args.model_choice == "i3d":
         from configs._base_.models.i3d_r50 import model as model_cfg_imported
         model_cfg = model_cfg_imported
-        model_cfg = dict(
-            type='Recognizer3D',
-            backbone=dict(
-                type='ResNet3dCSN',
-                pretrained2d=False,
-                pretrained=None,
-                depth=152,
-                with_pool2=False,
-                bottleneck_mode='ir',
-                norm_eval=False,
-                zero_init_residual=False),
-            cls_head=dict(
-                type='I3DHead',
-                num_classes=6,
-                in_channels=2048,
-                spatial_type='avg',
-                dropout_ratio=0.5,
-                init_std=0.01),
-            # model training and testing settings
-            train_cfg=None,
-            test_cfg=dict(average_clips='prob', max_testing_views=10))
+        # model_cfg = dict(
+        #     type='Recognizer3D',
+        #     backbone=dict(
+        #         type='ResNet3dCSN',
+        #         pretrained2d=False,
+        #         pretrained=None,
+        #         depth=152,
+        #         with_pool2=False,
+        #         bottleneck_mode='ir',
+        #         norm_eval=False,
+        #         zero_init_residual=False),
+        #     cls_head=dict(
+        #         type='I3DHead',
+        #         num_classes=6,
+        #         in_channels=2048,
+        #         spatial_type='avg',
+        #         dropout_ratio=0.5,
+        #         init_std=0.01),
+        #     # model training and testing settings
+        #     train_cfg=None,
+        #     test_cfg=dict(average_clips='prob', max_testing_views=10))
 
     
     model = build_model(model_cfg)
@@ -260,6 +231,3 @@ def main():
             pickle.dump(feat, fout)
         prog_bar.update()
 
-
-if __name__ == '__main__':
-    main()

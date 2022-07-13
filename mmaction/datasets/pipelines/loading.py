@@ -1063,6 +1063,7 @@ class DecordInit:
             self.file_client = FileClient(self.io_backend, **self.kwargs)
 
         file_obj = io.BytesIO(self.file_client.get(results['filename']))
+        print(results['filename'])
         container = decord.VideoReader(file_obj, num_threads=self.num_threads)
         results['video_reader'] = container
         results['total_frames'] = len(container)
@@ -1297,7 +1298,7 @@ class RawFrameDecode:
 
             frame_idx += offset
             if modality == 'RGB':
-                filepath = osp.join(directory, filename_tmpl.format(frame_idx))
+                filepath = osp.join(directory, filename_tmpl.format(frame_idx+1))
                 img_bytes = self.file_client.get(filepath)
                 # Get frame with channel order RGB directly.
                 cur_frame = mmcv.imfrombytes(img_bytes, channel_order='rgb')
