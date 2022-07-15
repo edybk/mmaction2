@@ -1272,7 +1272,7 @@ class RawFrameDecode:
         directory = results['frame_dir']
         filename_tmpl = results['filename_tmpl']
         modality = results['modality']
-
+        frame_start_idx = results.get('frame_start_idx', 0)
         if self.file_client is None:
             self.file_client = FileClient(self.io_backend, **self.kwargs)
 
@@ -1298,7 +1298,9 @@ class RawFrameDecode:
 
             frame_idx += offset
             if modality == 'RGB':
-                filepath = osp.join(directory, filename_tmpl.format(frame_idx+1))
+                filepath = osp.join(directory, filename_tmpl.format(frame_idx+frame_start_idx)) # for both
+                # filepath = osp.join(directory, filename_tmpl.format(frame_idx)) # for train
+                # filepath = osp.join(directory, filename_tmpl.format(frame_idx+1)) # for export
                 img_bytes = self.file_client.get(filepath)
                 # Get frame with channel order RGB directly.
                 cur_frame = mmcv.imfrombytes(img_bytes, channel_order='rgb')

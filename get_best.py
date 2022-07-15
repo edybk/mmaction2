@@ -10,8 +10,8 @@ csn_log_jsons = "/data/home/bedward/workspace/mmpose-project/mmaction2/work_dirs
 
 
 i3d_frontal_jsons = "/data/home/bedward/workspace/mmpose-project/mmaction2/work_dirs/i3d_r50_32x2x1_100e_apas_rgb_closeup/20220711_233245.log.json"
-i3d_frontal_jsons = "/data/home/bedward/workspace/mmpose-project/mmaction2/work_dirs/i3d_r50_32x2x1_100e_apas_rgb_closeup/20220711_233245.log.json"
 
+i3d_closeup_jsons = ""
 def get_best(jsonsss):
     acc = []
     with open(jsonsss) as f:

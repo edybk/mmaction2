@@ -14,6 +14,7 @@ from mmaction.models import build_model
 
 def main(args):
     args.is_rgb = args.modality == 'RGB'
+
     if args.model_choice == "tsn":
         args.clip_len = 1 if args.is_rgb else 5
         args.input_format = 'NCHW' if args.is_rgb else 'NCHW_Flow'
@@ -54,7 +55,7 @@ def main(args):
         the_crop_size = 256
         num_clips=10
         args.clip_len = 32
-        args.frame_interval = 2
+        # args.frame_interval = 2
 
     flow_norm_cfg = dict(mean=[128, 128], std=[128, 128])
     args.img_norm_cfg = rgb_norm_cfg if args.is_rgb else flow_norm_cfg
@@ -203,7 +204,8 @@ def main(args):
             total_frames=length,
             filename_tmpl=args.f_tmpl,
             start_index=0,
-            modality=args.modality)
+            modality=args.modality,
+            frame_start_idx = 1)
         sample = data_pipeline(tmpl)
         imgs = sample['imgs']
         shape = imgs.shape
