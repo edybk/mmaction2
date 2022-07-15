@@ -8,6 +8,7 @@ import warnings
 
 import mmcv
 import torch
+import torch.distributed as dist
 from mmcv import Config, DictAction
 from mmcv.runner import get_dist_info, init_dist, set_random_seed
 from mmcv.utils import get_git_hash
@@ -52,6 +53,10 @@ def parse_args():
         help='ids of gpus to use '
         '(only applicable to non-distributed training)')
     parser.add_argument('--seed', type=int, default=None, help='random seed')
+    parser.add_argument(
+        '--diff-seed',
+        action='store_true',
+        help='Whether or not set different seeds for different ranks')
     parser.add_argument(
         '--deterministic',
         action='store_true',
@@ -102,10 +107,21 @@ def main():
                                 osp.splitext(osp.basename(args.config))[0])
     if args.resume_from is not None:
         cfg.resume_from = args.resume_from
-    if args.gpu_ids is not None:
-        cfg.gpu_ids = args.gpu_ids
-    else:
-        cfg.gpu_ids = range(1) if args.gpus is None else range(args.gpus)
+
+    if args.gpu_ids is not None or args.gpus is not None:
+        warnings.warn(
+            'The Args `gpu_ids` and `gpus` are only used in non-distributed '
+            'mode and we highly encourage you to use distributed mode, i.e., '
+            'launch training with dist_train.sh. The two args will be '
+            'deperacted.')
+        if args.gpu_ids is not None:
+            warnings.warn(
+                'Non-distributed training can only use 1 gpu now. We will '
+                'use the 1st one in gpu_ids. ')
+            cfg.gpu_ids = [args.gpu_ids[0]]
+        elif args.gpus is not None:
+            warnings.warn('Non-distributed training can only use 1 gpu now. ')
+            cfg.gpu_ids = range(1)
 
     # init distributed env first, since logger depends on the dist info.
     if args.launcher == 'none':
@@ -147,7 +163,8 @@ def main():
     logger.info(f'Config: {cfg.pretty_text}')
 
     # set random seeds
-    seed = init_random_seed(args.seed)
+    seed = init_random_seed(args.seed, distributed=distributed)
+    seed = seed + dist.get_rank() if args.diff_seed else seed
     logger.info(f'Set random seed to {seed}, '
                 f'deterministic: {args.deterministic}')
     set_random_seed(seed, deterministic=args.deterministic)

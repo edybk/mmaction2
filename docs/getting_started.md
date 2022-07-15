@@ -99,35 +99,35 @@ Assume that you have already downloaded the checkpoints to the directory `checkp
 
 1. Test TSN on Kinetics-400 (without saving the test results) and evaluate the top-k accuracy and mean class accuracy.
 
-    ```shell
-    python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
-        checkpoints/SOME_CHECKPOINT.pth \
-        --eval top_k_accuracy mean_class_accuracy
-    ```
+   ```shell
+   python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
+       checkpoints/SOME_CHECKPOINT.pth \
+       --eval top_k_accuracy mean_class_accuracy
+   ```
 
 2. Test TSN on Something-Something V1 with 8 GPUS, and evaluate the top-k accuracy.
 
-    ```shell
-    ./tools/dist_test.sh configs/recognition/tsn/tsn_r50_1x1x8_50e_sthv1_rgb.py \
-        checkpoints/SOME_CHECKPOINT.pth \
-        8 --out results.pkl --eval top_k_accuracy
-    ```
+   ```shell
+   ./tools/dist_test.sh configs/recognition/tsn/tsn_r50_1x1x8_50e_sthv1_rgb.py \
+       checkpoints/SOME_CHECKPOINT.pth \
+       8 --out results.pkl --eval top_k_accuracy
+   ```
 
 3. Test TSN on Kinetics-400 in slurm environment and evaluate the top-k accuracy
 
-    ```shell
-    python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
-        checkpoints/SOME_CHECKPOINT.pth \
-        --launcher slurm --eval top_k_accuracy
-    ```
+   ```shell
+   python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
+       checkpoints/SOME_CHECKPOINT.pth \
+       --launcher slurm --eval top_k_accuracy
+   ```
 
 4. Test TSN on Something-Something V1 with onnx model and evaluate the top-k accuracy
 
-    ```shell
-    python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
-        checkpoints/SOME_CHECKPOINT.onnx \
-        --eval top_k_accuracy --onnx
-    ```
+   ```shell
+   python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
+       checkpoints/SOME_CHECKPOINT.onnx \
+       --eval top_k_accuracy --onnx
+   ```
 
 ### High-level APIs for testing a video and rawframes
 
@@ -152,7 +152,7 @@ model = init_recognizer(config_file, checkpoint_file, device=device)
 # test a single video and show the result:
 video = 'demo/demo.mp4'
 labels = 'tools/data/kinetics/label_map_k400.txt'
-results = inference_recognizer(model, video, labels)
+results = inference_recognizer(model, video)
 
 # show the results
 labels = open('tools/data/kinetics/label_map_k400.txt').readlines()
@@ -180,12 +180,12 @@ device = 'cuda:0' # or 'cpu'
 device = torch.device(device)
 
  # build the model from a config file and a checkpoint file
-model = init_recognizer(config_file, checkpoint_file, device=device, use_frames=True)
+model = init_recognizer(config_file, checkpoint_file, device=device)
 
 # test rawframe directory of a single video and show the result:
 video = 'SOME_DIR_PATH/'
 labels = 'tools/data/kinetics/label_map_k400.txt'
-results = inference_recognizer(model, video, labels, use_frames=True)
+results = inference_recognizer(model, video)
 
 # show the results
 labels = open('tools/data/kinetics/label_map_k400.txt').readlines()
@@ -218,7 +218,7 @@ model = init_recognizer(config_file, checkpoint_file, device=device)
 # test url of a single video and show the result:
 video = 'https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4'
 labels = 'tools/data/kinetics/label_map_k400.txt'
-results = inference_recognizer(model, video, labels)
+results = inference_recognizer(model, video)
 
 # show the results
 labels = open('tools/data/kinetics/label_map_k400.txt').readlines()
@@ -266,54 +266,54 @@ in [TSM: Temporal Shift Module for Efficient Video Understanding](https://arxiv.
 
 1. create a new file in `mmaction/models/backbones/resnet_tsm.py`.
 
-    ```python
-    from ..builder import BACKBONES
-    from .resnet import ResNet
+   ```python
+   from ..builder import BACKBONES
+   from .resnet import ResNet
 
-    @BACKBONES.register_module()
-    class ResNetTSM(ResNet):
+   @BACKBONES.register_module()
+   class ResNetTSM(ResNet):
 
-      def __init__(self,
-                   depth,
-                   num_segments=8,
-                   is_shift=True,
-                   shift_div=8,
-                   shift_place='blockres',
-                   temporal_pool=False,
-                   **kwargs):
-          pass
+     def __init__(self,
+                  depth,
+                  num_segments=8,
+                  is_shift=True,
+                  shift_div=8,
+                  shift_place='blockres',
+                  temporal_pool=False,
+                  **kwargs):
+         pass
 
-      def forward(self, x):
-          # implementation is ignored
-          pass
-    ```
+     def forward(self, x):
+         # implementation is ignored
+         pass
+   ```
 
 2. Import the module in `mmaction/models/backbones/__init__.py`
 
-    ```python
-    from .resnet_tsm import ResNetTSM
-    ```
+   ```python
+   from .resnet_tsm import ResNetTSM
+   ```
 
 3. modify the config file from
 
-    ```python
-    backbone=dict(
-      type='ResNet',
-      pretrained='torchvision://resnet50',
-      depth=50,
-      norm_eval=False)
-    ```
+   ```python
+   backbone=dict(
+     type='ResNet',
+     pretrained='torchvision://resnet50',
+     depth=50,
+     norm_eval=False)
+   ```
 
    to
 
-    ```python
-    backbone=dict(
-        type='ResNetTSM',
-        pretrained='torchvision://resnet50',
-        depth=50,
-        norm_eval=False,
-        shift_div=8)
-    ```
+   ```python
+   backbone=dict(
+       type='ResNetTSM',
+       pretrained='torchvision://resnet50',
+       depth=50,
+       norm_eval=False,
+       shift_div=8)
+   ```
 
 ### Write a new model
 
@@ -412,9 +412,21 @@ GPUS=16 ./tools/slurm_train.sh dev tsn_r50_k400 configs/recognition/tsn/tsn_r50_
 
 You can check [slurm_train.sh](/tools/slurm_train.sh) for full arguments and environment variables.
 
-If you have just multiple machines connected with ethernet, you can refer to
-pytorch [launch utility](https://pytorch.org/docs/stable/distributed.html#launch-utility).
-Usually it is slow if you do not have high speed networking like InfiniBand.
+If you have just multiple machines connected with ethernet, you can simply run the following commands:
+
+On the first machine:
+
+```shell
+NNODES=2 NODE_RANK=0 PORT=$MASTER_PORT MASTER_ADDR=$MASTER_ADDR sh tools/dist_train.sh $CONFIG $GPUS
+```
+
+On the second machine:
+
+```shell
+NNODES=2 NODE_RANK=1 PORT=$MASTER_PORT MASTER_ADDR=$MASTER_ADDR sh tools/dist_train.sh $CONFIG $GPUS
+```
+
+It can be extremely slow if you do not have high-speed networking like InfiniBand.
 
 ### Launch multiple jobs on a single machine
 
