@@ -94,3 +94,5 @@ checkpoint_config = dict(interval=5)
 work_dir = f'./work_dirs/i3d_r50_32x2x1_100e_apas_rgb_{view}_split{split}/'
 workflow = [('train', 1), ('val', 1)]
 load_from = "https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_256p_32x2x1_100e_kinetics400_rgb/i3d_r50_256p_32x2x1_100e_kinetics400_rgb_20200801-7d9f44de.pth"
+
+gpu_ids = range(0, 1)

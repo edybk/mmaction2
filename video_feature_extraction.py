@@ -62,8 +62,9 @@ def main(args):
     args.f_tmpl = 'img_{:05d}.jpg' if args.is_rgb else 'flow_{}_{:05d}.jpg'
     args.in_channels = args.clip_len * (3 if args.is_rgb else 2)
     # max batch_size for one forward
-    args.batch_size = 200
-
+    # args.batch_size = 200
+    args.batch_size = 100
+    
     # define the data pipeline for Untrimmed Videos
     data_pipeline = [
         dict(

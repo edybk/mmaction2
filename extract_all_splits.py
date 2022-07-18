@@ -32,7 +32,7 @@ def get_best_checkpoint(work_dir):
 
 def extract(args, model_type = "tsn", view = "frontal"):
     if model_type == "c3d":
-        model_name = "c3d_sports1m_16x1x1_45e_apas_rgb_200epochs_withoutg0"
+        model_name = f"new_c3d_sports1m_16x1x1_45e_apas_rgb_{view}"
     elif model_type == "tsn":
         model_name = "tsn_r50_video_1x1x8_100e_kinetics400_rgb_apas_withoutg0"
     elif model_type=="csn":
@@ -65,7 +65,7 @@ def extract(args, model_type = "tsn", view = "frontal"):
             args.data_prefix = rawframes_root
             args.data_list = f"data/apas_activity_net/splits/{sset}.split{split}.bundle"
             args.output_prefix = f"data/apas_activity_net/rgb_feat/{view}/{model_type}/split{split}"
-            export_videos(args)
+            # export_videos(args)
             # break
         # break
     print(f"mean validation: {np.mean(accs)}")
