@@ -172,7 +172,8 @@ def main(args):
         #     # model training and testing settings
         #     train_cfg=None,
         #     test_cfg=dict(average_clips='prob', max_testing_views=10))
-
+    model_cfg["test_cfg"] = dict(average_clips=None, 
+                          feature_extraction=True)
     
     model = build_model(model_cfg)
     # load pretrained weight into the feature extractor

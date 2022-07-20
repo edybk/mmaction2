@@ -65,7 +65,7 @@ def extract(args, model_type = "tsn", view = "frontal"):
             args.data_prefix = rawframes_root
             args.data_list = f"data/apas_activity_net/splits/{sset}.split{split}.bundle"
             args.output_prefix = f"data/apas_activity_net/rgb_feat/{view}/{model_type}/split{split}"
-            # export_videos(args)
+            export_videos(args)
             # break
         # break
     print(f"mean validation: {np.mean(accs)}")
