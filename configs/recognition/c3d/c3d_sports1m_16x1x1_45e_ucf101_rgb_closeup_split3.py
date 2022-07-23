@@ -97,7 +97,7 @@ log_config = dict(
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = f'./work_dirs/c3d_sports1m_16x1x1_45e_apas_split_{split}_rgb_{view}}/'
+work_dir = f'./work_dirs/c3d_sports1m_16x1x1_45e_apas_rgb_{view}_split{split}/'
 load_from = "https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb/c3d_sports1m_16x1x1_45e_ucf101_rgb_20201021-26655025.pth"
 resume_from = None
 workflow = [('train', 1), ('val', 1)]

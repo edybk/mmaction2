@@ -104,4 +104,4 @@ def parse_args():
 args = parse_args()
 
 
-extract(args, model_type = "i3d", view="frontal")
+extract(args, model_type = "i3d", view="closeup")
