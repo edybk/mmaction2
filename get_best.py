@@ -23,4 +23,5 @@ def get_best(jsonsss):
     return max(acc)
     
 
-get_best("/data/home/bedward/workspace/mmpose-project/mmaction2/work_dirs/i3d_r50_32x2x1_100e_apas_rgb_frontal_split1/20220716_130848.log.json")
+# get_best("/data/home/bedward/workspace/mmpose-project/mmaction2/work_dirs/i3d_r50_32x2x1_100e_apas_rgb_frontal_split1/20220716_130848.log.json")
+get_best("/data/home/bedward/workspace/mmpose-project/mmaction2/work_dirs/c3d_sports1m_16x1x1_45e_apas_rgb_frontal_split1/20220716_130338.log.json")

@@ -26,10 +26,20 @@ def main(args):
         the_crop_size = 256
     elif args.model_choice == "c3d":
         args.input_format = "NCTHW"
-        rgb_norm_cfg = dict(
-            mean=[144.7125, 132.8805, 124.7715],
-            std=[65.127, 69.1305, 70.737],
-            to_bgr=True)
+        if args.view == "frontal":
+            rgb_norm_cfg = dict(
+                mean=[144.01279543590812, 131.91472349201618, 123.31423661654405], std=[64.7040393831716, 68.7886688576991, 70.7488325943194], to_bgr=False)
+        elif args.view == "closeup":
+            rgb_norm_cfg = dict(
+                mean=[143.4728912137681, 134.76384643582082, 126.02240733958887], std=[67.93536819489091, 69.64873424594369, 70.77405831485332], to_bgr=False)
+            
+        """
+            dict(type='SampleFrames', clip_len=16, frame_interval=1, num_clips=1),
+            dict(type='RawFrameDecode'),
+            dict(type='Resize', scale=(128, 171)),
+            dict(type='RandomCrop', size=112),
+            dict(type='Flip', flip_ratio=0.5),
+        """
         the_scale = (128, 171)
         the_crop_size = 112
         args.clip_len = 16
@@ -128,7 +138,10 @@ def main(args):
         #         init_std=0.01),
         #     train_cfg=None,
         #     test_cfg=dict(average_clips='score', feature_extraction=True))
-
+        from configs._base_.models.c3d_sports1m_pretrained import model as model_cfg_imported
+        model_cfg = model_cfg_imported
+        model_cfg["test_cfg"] = dict(average_clips=None, 
+                        feature_extraction=True)
     elif args.model_choice == "csn":
         model_cfg = dict(
             type='Recognizer3D',
