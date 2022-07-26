@@ -5,10 +5,12 @@ import numpy as np
 
 repeat_size = 16
 # features_export_dir = "/data/home/bedward/workspace/mmpose-project/mmaction2/data/apas_activity_net/rgb_feat/frontal/i3d"
-features_export_dir = "/data/home/bedward/workspace/mmpose-project/mmaction2/data/apas_activity_net/rgb_feat/frontal/c3d"
+# features_export_dir = "/data/home/bedward/workspace/mmpose-project/mmaction2/data/apas_activity_net/rgb_feat/frontal/c3d"
+features_export_dir = "/data/home/bedward/workspace/mmpose-project/mmaction2/data/apas_activity_net/rgb_feat/closeup/i3d"
 
 # final_features_exprt_dir = "/data/home/bedward/datasets/APAS-Activities-Eddie/rgb_feat/frontal/i3d/" 
-final_features_exprt_dir = "/data/home/bedward/datasets/APAS-Activities-Eddie/rgb_feat/frontal/c3d/" 
+# final_features_exprt_dir = "/data/home/bedward/datasets/APAS-Activities-Eddie/rgb_feat/frontal/c3d/" 
+final_features_exprt_dir = "/data/home/bedward/datasets/APAS-Activities-Eddie/rgb_feat/closeup/i3d/" 
 
 
 os.makedirs(final_features_exprt_dir, exist_ok=True)
