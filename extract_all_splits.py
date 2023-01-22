@@ -7,6 +7,7 @@ from video_feature_extraction import main as export_videos
 
 rawframes_frontal = "data/apas/rawframes_raw"
 rawframes_closeup = "data/apas/rawframes_raw_closeup"
+rawframes_frontal_with_keypoints = "data/apas/rawframes_with_keypoints_regular"
 
 def get_best(jsonsss):
     acc = []
@@ -30,7 +31,7 @@ def get_best_checkpoint(work_dir):
     acc, epoch = max(acc)
     return f"{work_dir}/epoch_{epoch}.pth", acc
 
-def extract(args, model_type = "tsn", view = "frontal"):
+def extract(args, model_type = "tsn", view = "frontal", with_kp=False):
     if model_type == "c3d":
         model_name = f"new_c3d_sports1m_16x1x1_45e_apas_rgb_{view}"
     elif model_type == "tsn":
@@ -45,6 +46,8 @@ def extract(args, model_type = "tsn", view = "frontal"):
 
     if view == "frontal":
         rawframes_root = rawframes_frontal
+        if with_kp:
+            rawframes_root = rawframes_frontal_with_keypoints
     elif view == "closeup":
         rawframes_root = rawframes_closeup
     else:
@@ -64,7 +67,8 @@ def extract(args, model_type = "tsn", view = "frontal"):
         for sset in ["train", "val", "test"]:
             args.data_prefix = rawframes_root
             args.data_list = f"data/apas_activity_net/splits/{sset}.split{split}.bundle"
-            args.output_prefix = f"data/apas_activity_net/rgb_feat/{view}/{model_type}/split{split}"
+            
+            args.output_prefix = f"data/apas_activity_net/rgb_feat/{view+'_wkp' if with_kp else view}/{model_type}/split{split}"
             export_videos(args)
             # break
         # break
@@ -104,4 +108,6 @@ def parse_args():
 args = parse_args()
 
 
-extract(args, model_type = "i3d", view="closeup")
+# extract(args, model_type = "i3d", view="closeup")
+
+extract(args, model_type = "i3d", view="frontal", with_kp=True)
